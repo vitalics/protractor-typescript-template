@@ -1,5 +1,4 @@
 'use strict';
-
 // An example configuration file.
 exports.config = {
   // The address of a running selenium server.
@@ -8,14 +7,17 @@ exports.config = {
 
   // Capabilities to be passed to the webdriver instance.
   capabilities: {
-    'browserName': 'chrome'
+    browserName: 'chrome'
   },
-
+  directConnect: true,
+  beforeLaunch: () => {
+    require('ts-node').register();
+  },
   //baseUrl: 'http://localhost:3000',
 
   // Spec patterns are relative to the current working directory when
   // protractor is called.
-  specs: ['.tmp/e2e/**/*.js'],
+  specs: ['src/e2e/**/*.ts'],
 
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
