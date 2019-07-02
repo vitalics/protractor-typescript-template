@@ -1,5 +1,5 @@
-import { Component } from "./component";
 import { $$ } from "protractor";
+import { Component } from "./component";
 import { Collection } from "./collection";
 
 export class Reason extends Component {

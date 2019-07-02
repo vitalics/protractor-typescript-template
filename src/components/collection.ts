@@ -1,10 +1,10 @@
-import { TextComponent } from "./component";
+import { PureComponent, Component } from "./component";
 import { ElementArrayFinder, ElementFinder, $ } from "protractor";
 
-export class Collection<C extends TextComponent = TextComponent> implements AsyncIterable<C>{
+export class Collection<C extends PureComponent | Component> implements AsyncIterable<C>{
     public constructor(
         public readonly root: ElementArrayFinder,
-        protected readonly component: (new (el: ElementFinder) => C) | typeof TextComponent = TextComponent
+        protected readonly component: (new (el: ElementFinder) => C)
     ) { }
     [Symbol.asyncIterator](): AsyncIterator<C> {
         let index = 0;
@@ -26,17 +26,26 @@ export class Collection<C extends TextComponent = TextComponent> implements Asyn
     }
 
     public get(index: number): C {
-        return new this.component(this.root.get(index)) as C;
+        return new this.component(this.root.get(index));
     }
 
     public first(): C {
-        return new this.component(this.root.first()) as C;
+        return new this.component(this.root.first());
     }
     public last(): C {
-        return new this.component(this.root.last()) as C;
+        return new this.component(this.root.last());
     }
 
-    toArrayFinder() {
+    public async map<U>(fn: (comp: C, index?: number) => U): Promise<U[]> {
+        const els = await this.root.map((el, index) => fn(new this.component(el), index)) as U[];
+        return els;
+    }
+
+    public toArrayFinder() {
         return this.root;
+    }
+
+    public static isCollection(collectionLike: any): collectionLike is Collection<any> {
+        return collectionLike instanceof Collection;
     }
 }

@@ -1,24 +1,36 @@
 import { ElementFinder, Locator } from "protractor";
 
-export class TextComponent {
+export class PureComponent {
     public constructor(protected readonly root: ElementFinder) { }
+
+    public async getText() {
+        return this.root.getText();
+    }
+    public static isPureComponent(textCompLike: any): textCompLike is PureComponent {
+        return textCompLike instanceof PureComponent;
+    }
+}
+
+export class Component {
+    public constructor(public readonly root: ElementFinder) { }
 
     async getText() {
         return this.root.getText();
     }
-}
-
-export class Component extends TextComponent {
     $(locator: Locator) {
-        this.root.element(locator);
+        return this.root.element(locator);
     }
     $$(locator: Locator) {
-        this.root.all(locator);
+        return this.root.all(locator);
     }
     find(locator: Locator) {
-        this.$(locator);
+        return this.$(locator);
     }
     findAll(locator: Locator) {
-        this.$$(locator);
+        return this.$$(locator);
+    }
+
+    static isComponent(componentLike: any): componentLike is Component {
+        return componentLike instanceof Component;
     }
 }
